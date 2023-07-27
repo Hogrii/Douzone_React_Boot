@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.dao.TodoDAO">
+	<!-- 
+	<resultMap id="TodoMap" type="TodoVO">
+		<result column="id"			property="id"		 jdbcType="NUMBER"		javaType="int"/>
+		<result column="title"		property="title"	 jdbcType="VARCHAR2"	javaType="String"/>
+		<result column="checked"	property="checked"	 jdbcType="CHAR"		javaType="bool"/>
+		<result column="reg_date"	property="reg_date"	 jdbcType="TIMESTAMP"	javaType="String"/>
+		<result column="mode_date"	property="mode_date" jdbcType="TIMESTAMP"	javaType="String"/>
+	</resultMap>
+	-->
+	
+	<insert id="insert" parameterType="TodoVO">
+	<!--  mariadb  
+		<selectKey keyProperty="id" resultType="int" order="AFTER">
+			select LAST_INSERT_ID() id
+		</selectKey>
+		insert into TODO (
+			title, 
+			checked
+		) values (
+			#{title}, 
+			'F'
+		) 		
+	-->
+		<selectKey keyProperty="id" resultType="int" order="BEFORE">
+			select 
+				TODO_SEQ.nextval id 
+			from dual
+		</selectKey>
+		insert into TODO (
+			id,
+			title, 
+			checked
+		) values (
+			#{id},
+			#{title}, 
+			'F'
+		) 		
+	</insert>
+	
+	<select id="todoList" resultType="TodoVO">
+		select 
+			id, 
+			title,
+			case checked when 'F' then 0 else 1 end checked,
+			TO_CHAR(reg_date, 'YYYY-MM-DD HH24:MI:SS') regDate 
+		from TODO
+		where DELETE_YN = 'N'
+	</select>
+	
+	<update id="update" >
+		update TODO set 
+			<if test="title != null and title != ''">
+				title   = #{title}, 
+			</if>
+			<if test="checked != null and checked != ''">
+				checked = #{checked},
+			</if>
+			mod_date = sysdate
+		where id = #{id}
+	</update>
+	 
+	<update id="delete" >
+		update TODO set 
+			delete_date = sysdate,
+			delete_yn    = 'Y'
+		where id = #{id}
+	</update>
+</mapper>

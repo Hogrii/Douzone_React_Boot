@@ -1,0 +1,45 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.1.2'
+	id 'io.spring.dependency-management' version '1.1.2'
+}
+
+// project package
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+
+// java version
+java {
+	sourceCompatibility = '17'
+}
+
+// 구성 정보
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+// 저장소
+repositories {
+	mavenCentral()
+}
+
+// 의존
+// maven과 비슷, 입력 방법만 다름
+// maven repository에서 gradle 복사해서 붙여넣으면 된다
+// Project and External Dependencies에서 확인 할 수 있다
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.2'
+	compileOnly 'org.projectlombok:lombok'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	runtimeOnly 'com.oracle.database.jdbc:ojdbc8'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.2'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
